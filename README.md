@@ -1,2 +1,3 @@
-# build-scripts
-some scripts to compile the base library。
+# cross-compiling-scripts
+
+some scripts for cross-compiling the base library
