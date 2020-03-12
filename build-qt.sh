@@ -3,21 +3,33 @@
 # set -v 
 
 PLATFORM=my-linux-arm-qt
-SCRIPT_PATH="/home/jie"
+SCRIPT_PATH=$(pwd)
+
+#修改源码包解压后的名称
+MAJOR_NAME=qt-everywhere-src
 
 #修改需要下载的源码前缀和后缀
 OPENSRC_VER_PREFIX=5.11
 OPENSRC_VER_SUFFIX=.1
 
 #添加tslib交叉编译的动态库文件和头文件路径
-TSLIB_LIB=/home/jie/arm_tslib/lib/
-TSLIB_INC=/home/jie/arm_tslib/include/
+TSLIB_LIB="/home/jie/arm_tslib/lib"
+TSLIB_INC="/home/jie/arm_tslib/include"
+
+#添加alsa交叉编译的动态库文件和头文件路径
+ALSA_LIB="/opt/alsa-lib-1.2.2/lib"
+ALSA_INC="/opt/alsa-lib-1.2.2/include"
+
+#添加glib交叉编译的动态库文件和头文件路径
+GLIB_LIB="/opt/glib-2.45.3/lib"
+GLIB_INC="/opt/glib-2.45.3/include"
+
 
 #修改源码包解压后的名称
-PACKAGE_NAME=qt-everywhere-src-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
+PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 
 #定义编译后安装--生成的文件,文件夹位置路径
-INSTALL_PATH=/opt/arm-qt-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
+INSTALL_PATH=/opt/${PACKAGE_NAME}
 
 #添加交叉编译工具链路径 example:/home/aron566/opt/arm-2014.05/bin/arm-none-linux-gnueabihf
 CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
@@ -36,10 +48,10 @@ CONFIG_PATH=${SCRIPT_PATH}/${PACKAGE_NAME}/qtbase/mkspecs/${PLATFORM}
 CONFIG_FILE=${CONFIG_PATH}/qmake.conf
 
 #下载源码包
-do_download_qt_every_src () {
+do_download_src () {
    if [ ! -f "${COMPRESS_PACKAGE}" ];then
       if [ ! -d "${PACKAGE_NAME}" ];then
-      wget -c ${DOWNLOAD_LINK}
+         wget -c ${DOWNLOAD_LINK}
       fi
    fi
 }
@@ -47,11 +59,11 @@ do_download_qt_every_src () {
 #解压源码包
 do_tar_package () {
    #if exist file then
-   echo "\033[1;33m start unpacking the ${PACKAGE_NAME} package ...\033[0m"
+   echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
    fi
-   echo "\033[1;33m done...\033[0m"
+   echo "\033[1;33mdone...\033[0m"
    cd ${PACKAGE_NAME}
 }
 
@@ -66,6 +78,8 @@ do_install_config_dependent () {
 
 #修改配置平台
 do_config_before () {
+   echo "\033[1;33mstart configure platform...\033[0m"
+
 if [ ! -d "${CONFIG_PATH}" ];then
    cp -a ${SCRIPT_PATH}/${PACKAGE_NAME}/qtbase/mkspecs/linux-arm-gnueabi-g++ ${CONFIG_PATH}
 fi
@@ -97,11 +111,16 @@ fi
    echo "" >> ${CONFIG_FILE}
    echo "QMAKE_INCDIR=${TSLIB_INC}" >> ${CONFIG_FILE}
    echo "QMAKE_LIBDIR=${TSLIB_LIB}" >> ${CONFIG_FILE}
+
+   cat ${CONFIG_FILE}
+   echo "\033[1;33mdone...\033[0m"
 }
 
 #配置选项
 do_configure () {
-   ./configure -v \
+   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
+
+   ./configure \
    -prefix ${INSTALL_PATH} \
    -xplatform ${PLATFORM} \
    -release \
@@ -123,22 +142,24 @@ do_configure () {
    -skip qtpurchasing \
    -skip qtcharts \
    -skip qtdeclarative \
-   -no-glib \
    -no-iconv \
-   -alsa \
-   -silent \
-   -qt-zlib \
-   -make tools \
-   -libinput \
+   -no-glib \
    -tslib \
    -I${TSLIB_INC} \
-   -L${TSLIB_LIB}
+   -L${TSLIB_LIB} \
+   -alsa \
+   -I${ALSA_INC} \
+   -L${ALSA_LIB}
+
+   echo "\033[1;33mdone...\033[0m"
 }
 
 
 #编译并且安装
 do_make_install () {
+   echo "\033[1;33mstart make and install...\033[0m"
    make && make install
+   echo "\033[1;33mdone...\033[0m"
 }
 
 #删除下载的文件
@@ -148,8 +169,8 @@ do_delete_file () {
       sudo rm -f ${COMPRESS_PACKAGE}
    fi
 }
-
-do_download_qt_every_src
+rm -rf qt-everywhere-src-5.11.1
+do_download_src
 do_tar_package
 do_config_before
 do_configure
