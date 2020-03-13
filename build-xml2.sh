@@ -24,7 +24,7 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.gz
 #定义编译后安装--生成的文件,文件夹位置路径
 INSTALL_PATH=/opt/${PACKAGE_NAME}
 
-#添加交叉编译工具链路径 example:/home/aron566/opt/arm-2014.05/bin/arm-none-linux-gnueabihf
+#添加交叉编译工具链路径
 CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
@@ -41,7 +41,6 @@ do_download_src () {
 
 #解压源码包
 do_tar_package () {
-   #if exist file then
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
@@ -52,7 +51,7 @@ do_tar_package () {
 
 #配置选项
 do_configure () {
-   echo "\033[1;33mstart configure qt...\033[0m"
+   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
 
    export CC=${CROSS_CHAIN_PREFIX}-gcc 
    export CXX=${CROSS_CHAIN_PREFIX}-g++
@@ -90,4 +89,3 @@ do_make_install
 # do_delete_file
 
 exit $?
-

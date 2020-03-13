@@ -10,7 +10,7 @@ MAJOR_NAME=qt-everywhere-src
 
 #修改需要下载的源码前缀和后缀
 OPENSRC_VER_PREFIX=5.11
-OPENSRC_VER_SUFFIX=.1
+OPENSRC_VER_SUFFIX=.3
 
 #添加tslib交叉编译的动态库文件和头文件路径
 TSLIB_LIB="/home/jie/arm_tslib/lib"
@@ -31,8 +31,9 @@ PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 #定义编译后安装--生成的文件,文件夹位置路径
 INSTALL_PATH=/opt/${PACKAGE_NAME}
 
-#添加交叉编译工具链路径 example:/home/aron566/opt/arm-2014.05/bin/arm-none-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
+#添加交叉编译工具链路径
+# CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
 
 #定义压缩包名称
 COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
@@ -40,6 +41,7 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 #无需修改--自动组合下载地址
 OPENSRC_VER=${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 DOWNLOAD_LINK=http://download.qt.io/new_archive/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
+# DOWNLOAD_LINK=http://download.qt.io/official_releases/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
 
 #无需修改--自动组合平台路径
 CONFIG_PATH=${SCRIPT_PATH}/${PACKAGE_NAME}/qtbase/mkspecs/${PLATFORM}
@@ -58,7 +60,6 @@ do_download_src () {
 
 #解压源码包
 do_tar_package () {
-   #if exist file then
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
@@ -169,14 +170,13 @@ do_delete_file () {
       sudo rm -f ${COMPRESS_PACKAGE}
    fi
 }
-rm -rf qt-everywhere-src-5.11.1
+
 do_download_src
 do_tar_package
 do_config_before
 do_configure
-# do_install_config_dependent
-# do_make_install
+do_install_config_dependent
+do_make_install
 # do_delete_file
 
 exit $?
-

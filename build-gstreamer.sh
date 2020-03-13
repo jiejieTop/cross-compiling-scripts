@@ -6,20 +6,20 @@ PLATFORM=arm-linux-gnueabihf
 SCRIPT_PATH=$(pwd)
 
 # 依赖libffi
-LIBFFI_PKG_CONFIG_PATH="/opt/libffi-3.3/lib/pkgconfig"
+LIBFFI_PKG_CONFIG_PATH=/opt/libffi-3.3/lib/pkgconfig
 # 依赖libxml2
-XML2_PKG_CONFIG_PATH="/opt/libxml2-2.9.4/lib/pkgconfig"
+XML2_PKG_CONFIG_PATH=/opt/libxml2-2.9.4/lib/pkgconfig
 # 依赖glib
-GLIB_PKG_CONFIG_PATH="/opt/glib-2.45.3/lib/pkgconfig"
+GLIB_PKG_CONFIG_PATH=/opt/glib-2.45.3/lib/pkgconfig
 # 依赖zlib
-ZLIB_PKG_CONFIG_PATH="/opt/zlib-1.2.11/lib/pkgconfig"
+ZLIB_PKG_CONFIG_PATH=/opt/zlib-1.2.11/lib/pkgconfig
 
 
 #修改源码包解压后的名称
-MAJOR_NAME=ffmpeg
+MAJOR_NAME=gstreamer
 
 #修改需要下载的源码前缀和后缀
-OPENSRC_VER_PREFIX=4.2
+OPENSRC_VER_PREFIX=1.10
 OPENSRC_VER_SUFFIX=.1
 
 PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
@@ -29,12 +29,13 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 
 #定义编译后安装--生成的文件,文件夹位置路径
 INSTALL_PATH=/opt/${PACKAGE_NAME}
+GSTERAMER_PKG_CONFIG_PATH="${INSTALL_PATH}/lib/pkgconfig"
 
-#添加交叉编译工具链路径
+#添加交叉编译工具链路径 
 CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
-DOWNLOAD_LINK=http://ffmpeg.org/releases/${COMPRESS_PACKAGE}
+DOWNLOAD_LINK=https://gstreamer.freedesktop.org/src/${MAJOR_NAME}/${COMPRESS_PACKAGE}
 
 #下载源码包
 do_download_src () {
@@ -47,6 +48,7 @@ do_download_src () {
 
 #解压源码包
 do_tar_package () {
+   #if exist file then
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
@@ -57,32 +59,40 @@ do_tar_package () {
 
 #配置选项
 do_configure () {
-   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
+   echo "\033[1;33mstart configure qt...\033[0m"
 
+   export PKG_CONFIG_PATH=${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:${GSTERAMER_PKG_CONFIG_PATH}:$PKG_CONFIG_PATH
+
+   CC=${CROSS_CHAIN_PREFIX}-gcc 
    ./configure \
-   --cc=${CROSS_CHAIN_PREFIX}-gcc \
    --prefix=${INSTALL_PATH} \
-   --enable-cross-compile \
-   --target-os=linux \
-   --arch=arm \
-   --enable-shared \
-   --disable-static \
-   --enable-gpl \
-   --enable-nonfree \
-   --enable-ffmpeg \
-   --disable-ffplay \
-   --enable-swscale \
-   --enable-pthreads \
-   --disable-armv5te \
-   --disable-armv6 \
-   --disable-armv6t2 \
-   --disable-yasm \
-   --disable-stripping \
-   --enable-libx264 \
-   --extra-cflags=-I/usr/local/include \
-   --extra-ldflags=-L/usr/local/lib \
-   --extra-libs=-ldl
-
+   --host=${PLATFORM} \
+   ac_cv_func_register_printf_function=no \
+   --disable-registry \
+   --disable-loadsave \
+   --disable-gtk-doc \
+   --disable-tests \
+   --disable-valgrind \
+   --disable-debug \
+   --disable-x \
+   --disable-xshm \
+   --disable-cairo \
+   --disable-xvideo \
+   --disable-esd \
+   --disable-shout2 \
+   --disable-gconf \
+   --disable-gdk_pixbuf \
+   --disable-hal \
+   --disable-oss \
+   --disable-oss4 \
+   --disable-gnome_vfs \
+   --disable-ogg \
+   --disable-pango \
+   --disable-theora \
+   --disable-vorbis \
+   --disable-examples  
+   # --disable-libpng \
+   # --disable-alsa \
    echo "\033[1;33mdone...\033[0m"
 }
 

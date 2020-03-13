@@ -3,7 +3,7 @@
 # set -v 
 
 HOST=arm-linux-gnueabihf
-SCRIPT_PATH="/home/jie"
+SCRIPT_PATH=$(pwd)
 
 # 依赖libffi
 LIBFFI_INC="/opt/libffi-3.3/include"
@@ -13,13 +13,15 @@ LIBFFI_LIB="/opt/libffi-3.3/lib"
 ZLIB_INC="/opt/zlib-1.2.11/include"
 ZLIB_LIB="/opt/zlib-1.2.11/lib"
 
+#修改源码包解压后的名称
+MAJOR_NAME=glib
 
 #修改需要下载的源码前缀和后缀
 OPENSRC_VER_PREFIX=2.45
 OPENSRC_VER_SUFFIX=.3
 
 #修改源码包解压后的名称
-PACKAGE_NAME=glib-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
+PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 
 #定义压缩包名称
 COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
@@ -27,11 +29,11 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 #定义编译后安装--生成的文件,文件夹位置路径
 INSTALL_PATH=/opt/${PACKAGE_NAME}
 
-#添加交叉编译工具链路径 example:/home/aron566/opt/arm-2014.05/bin/arm-none-linux-gnueabihf
+#添加交叉编译工具链路径 
 CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
-DOWNLOAD_LINK=http://ftp.gnome.org/pub/gnome/sources/glib/${OPENSRC_VER_PREFIX}/${COMPRESS_PACKAGE}
+DOWNLOAD_LINK=http://ftp.gnome.org/pub/gnome/sources/${MAJOR_NAME}/${OPENSRC_VER_PREFIX}/${COMPRESS_PACKAGE}
 
 #下载源码包
 do_download_src () {
@@ -48,7 +50,6 @@ do_download_src () {
 
 #解压源码包
 do_tar_package () {
-   #if exist file then
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
@@ -60,7 +61,7 @@ do_tar_package () {
 
 #配置选项
 do_configure () {
-   echo "\033[1;33mstart configure qt...\033[0m"
+   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
 
 cat  <<EOF > glib.cache 
 glib_cv_long_long_format=ll
@@ -113,4 +114,3 @@ do_make_install
 # do_delete_file
 
 exit $?
-

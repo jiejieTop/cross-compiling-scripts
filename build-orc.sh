@@ -49,7 +49,7 @@ do_tar_package () {
 
 #配置选项
 do_configure () {
-   echo "\033[1;33mstart configure qt...\033[0m"
+   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
 
 
    export CC=${CROSS_CHAIN_PREFIX}-gcc 
@@ -83,4 +83,3 @@ do_make_install
 # do_delete_file
 
 exit $?
-

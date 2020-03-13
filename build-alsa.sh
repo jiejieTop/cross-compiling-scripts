@@ -5,16 +5,6 @@
 HOST=arm-linux-gnueabihf
 SCRIPT_PATH=$(pwd)
 
-# 依赖libffi
-LIBFFI_PKG_CONFIG_PATH="/opt/libffi-3.3/lib/pkgconfig"
-# 依赖libxml2
-XML2_PKG_CONFIG_PATH="/opt/libxml2-2.9.4/lib/pkgconfig"
-# 依赖glib
-GLIB_PKG_CONFIG_PATH="/opt/glib-2.45.3/lib/pkgconfig"
-# 依赖zlib
-ZLIB_PKG_CONFIG_PATH="/opt/zlib-1.2.11/lib/pkgconfig"
-
-
 #修改源码包解压后的名称
 MAJOR_NAME=alsa-lib
 
@@ -47,7 +37,6 @@ do_download_src () {
 
 #解压源码包
 do_tar_package () {
-   #if exist file then
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
    if [ ! -d "${PACKAGE_NAME}" ];then
       tar -xf ${COMPRESS_PACKAGE}
@@ -58,7 +47,7 @@ do_tar_package () {
 
 #配置选项
 do_configure () {
-   echo "\033[1;33mstart configure qt...\033[0m"
+   echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
 
    mkdir -p ${INSTALL_PATH}/config
    mkdir -p ${INSTALL_PATH}/plugin
@@ -68,6 +57,7 @@ do_configure () {
    ./configure \
    --prefix=${INSTALL_PATH} \
    --host=${HOST} \
+   # --enable-static \
    --enable-shared \
    --disable-python \
    --with-configdir=${INSTALL_PATH}/config \
@@ -99,4 +89,3 @@ do_make_install
 # do_delete_file
 
 exit $?
-
