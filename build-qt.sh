@@ -9,8 +9,8 @@ SCRIPT_PATH=$(pwd)
 MAJOR_NAME=qt-everywhere-src
 
 #修改需要下载的源码前缀和后缀
-OPENSRC_VER_PREFIX=5.11
-OPENSRC_VER_SUFFIX=.3
+OPENSRC_VER_PREFIX=5.14
+OPENSRC_VER_SUFFIX=.1
 
 #添加tslib交叉编译的动态库文件和头文件路径
 TSLIB_LIB="/home/jie/arm_tslib/lib"
@@ -40,8 +40,8 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 
 #无需修改--自动组合下载地址
 OPENSRC_VER=${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
-DOWNLOAD_LINK=http://download.qt.io/new_archive/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
-# DOWNLOAD_LINK=http://download.qt.io/official_releases/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
+# DOWNLOAD_LINK=http://download.qt.io/new_archive/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
+DOWNLOAD_LINK=http://download.qt.io/official_releases/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
 
 #无需修改--自动组合平台路径
 CONFIG_PATH=${SCRIPT_PATH}/${PACKAGE_NAME}/qtbase/mkspecs/${PLATFORM}
