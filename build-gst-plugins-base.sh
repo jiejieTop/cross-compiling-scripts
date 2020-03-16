@@ -25,10 +25,9 @@ ZLIB_INC=/opt/zlib-1.2.11/include
 ZLIB_LIB=/opt/zlib-1.2.11/lib
 ZLIB_PKG_CONFIG_PATH=/opt/zlib-1.2.11/lib/pkgconfig
 
-GSTERAMER_PKG_CONFIG_PATH="${INSTALL_PATH}/lib/pkgconfig"
 
 #修改源码包解压后的名称
-MAJOR_NAME=gstreamer
+MAJOR_NAME=gst-plugins-base
 
 #修改需要下载的源码前缀和后缀
 OPENSRC_VER_PREFIX=1.16
@@ -53,7 +52,7 @@ DOWNLOAD_LINK=https://gstreamer.freedesktop.org/src/${MAJOR_NAME}/${COMPRESS_PAC
 #下载源码包
 do_download_src () {
    echo "\033[1;33mstart download ${PACKAGE_NAME}...\033[0m"
-
+   echo ${DOWNLOAD_LINK}
    if [ ! -f "${COMPRESS_PACKAGE}" ];then
       if [ ! -d "${PACKAGE_NAME}" ];then
          wget -c ${DOWNLOAD_LINK}
@@ -82,7 +81,7 @@ do_install_config_dependent () {
 do_configure () {
    echo "\033[1;33mstart configure qt...\033[0m"
 
-   export PKG_CONFIG_PATH=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_PATH
+   export PKG_CONFIG_PATH=${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_PATH
 
    export LIBS="-lg -L${GLIB_LIB} -lffi -L${LIBFFI_LIB} -lxml2 -L${XML2_LIB} -lz -L${ZLIB_LIB}" \
    export CFLAGS="-I${GLIB_INC1} -I${GLIB_INC2} -I${GLIB_INC3} -I${GIO_INC} -I${XML2_INC} -I${LIBFFI_LIB} -I${ZLIB_LIB}"
@@ -93,42 +92,15 @@ do_configure () {
    ./configure \
    --prefix=${INSTALL_PATH} \
    --host=${PLATFORM} \
+   --disable-valgrind \
+   --disable-x \
+   --disable-gnome_vfs \
+   --disable-ogg \
+   --disable-pango \
+   --disable-theora \
+   --disable-vorbis \
    --disable-examples
-   # --cflags=-I${GLIB_INC} ${LIBFFI_INC} ${ZLIB_INC} ${XML2_INC} \
-   # --lib=-L${GLIB_LIB} ${LIBFFI_LIB} ${ZLIB_LIB} ${XML2_LIB} \
-   # GLIB_CFLAGS="-I${GLIB_INC}" \
-   # GLIB_LIBS="-lg -L${GLIB_LIB}" \
-   # LIBFFI_CFLAGS="-I${LIBFFI_INC}" \
-   # LIBFFI_LIBS="-lffi -L${LIBFFI_LIB}" \
-   # ZLIB_CFLAGS="-I${ZLIB_INC}" \
-   # ZLIB_LIBS="-lz -L${ZLIB_LIB}" \
-   # XML2_CFLAGS="-I${XML2_INC}" \
-   # XML2_LIBS="-lxml2 -L${XML2_LIB}" \
-   # ac_cv_func_register_printf_function=no
-   # --disable-loadsave \
-   # --disable-gtk-doc \
-   # --disable-tests \
-   # --disable-valgrind \
-   # --disable-debug \
-   # --disable-x \
-   # --disable-xshm \
-   # --disable-cairo \
-   # --disable-xvideo \
-   # --disable-esd \
-   # --disable-shout2 \
-   # --disable-gconf \
-   # --disable-gdk_pixbuf \
-   # --disable-hal \
-   # --disable-oss \
-   # --disable-oss4 \
-   # --disable-gnome_vfs \
-   # --disable-ogg \
-   # --disable-pango \
-   # --disable-theora \
-   # --disable-vorbis \
-   # --disable-examples \
-   # --disable-libpng 
-   
+
    echo "\033[1;33mdone...\033[0m"
 }
 

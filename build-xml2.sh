@@ -24,8 +24,9 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.gz
 #定义编译后安装--生成的文件,文件夹位置路径
 INSTALL_PATH=/opt/${PACKAGE_NAME}
 
-#添加交叉编译工具链路径
-CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
+#添加交叉编译工具链路径 
+# CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
 DOWNLOAD_LINK=http://xmlsoft.org/sources/${COMPRESS_PACKAGE}
@@ -33,9 +34,13 @@ DOWNLOAD_LINK=http://xmlsoft.org/sources/${COMPRESS_PACKAGE}
 #下载源码包
 do_download_src () {
    echo "\033[1;33mstart download ${PACKAGE_NAME}...\033[0m"
-   if [ ! -d "${PACKAGE_NAME}" ];then
-      wget -c ${DOWNLOAD_LINK}
+
+   if [ ! -f "${COMPRESS_PACKAGE}" ];then
+      if [ ! -d "${PACKAGE_NAME}" ];then
+         wget -c ${DOWNLOAD_LINK}
+      fi
    fi
+
    echo "\033[1;33mdone...\033[0m"
 }
 
@@ -69,7 +74,7 @@ do_configure () {
 
 #编译并且安装
 do_make_install () {
-   echo "\033[1;33mstart make and install...\033[0m"
+   echo "\033[1;33mstart make and install ${PACKAGE_NAME} ...\033[0m"
    make && make install
    echo "\033[1;33mdone...\033[0m"
 }

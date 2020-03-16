@@ -13,23 +13,48 @@ OPENSRC_VER_PREFIX=5.14
 OPENSRC_VER_SUFFIX=.1
 
 #添加tslib交叉编译的动态库文件和头文件路径
-TSLIB_LIB="/home/jie/arm_tslib/lib"
-TSLIB_INC="/home/jie/arm_tslib/include"
+TSLIB_LIB=/opt/tslib-1.21/lib
+TSLIB_INC=/opt/tslib-1.21/include
 
 #添加alsa交叉编译的动态库文件和头文件路径
-ALSA_LIB="/opt/alsa-lib-1.2.2/lib"
-ALSA_INC="/opt/alsa-lib-1.2.2/include"
+ALSA_LIB=/opt/alsa-lib-1.2.2/lib
+ALSA_INC=/opt/alsa-lib-1.2.2/include
 
 #添加glib交叉编译的动态库文件和头文件路径
-GLIB_LIB="/opt/glib-2.45.3/lib"
-GLIB_INC="/opt/glib-2.45.3/include"
+GLIB_LIB=/opt/glib-2.45.3/lib
+GLIB_INC=/opt/glib-2.45.3/include
 
+# 依赖libffi
+LIBFFI_INC=/opt/libffi-3.3/include
+LIBFFI_LIB=/opt/libffi-3.3/lib
+LIBFFI_PKG_CONFIG_PATH=/opt/libffi-3.3/lib/pkgconfig
+# 依赖libxml2
+XML2_INC=/opt/libxml2-2.9.4/include
+XML2_LIB=/opt/libxml2-2.9.4/lib
+XML2_PKG_CONFIG_PATH=/opt/libxml2-2.9.4/lib/pkgconfig
+# 依赖glib
+GLIB_INC1=/opt/glib-2.45.3/include/
+GLIB_INC2=/opt/glib-2.45.3/include/glib-2.0/
+GLIB_INC3=/opt/glib-2.45.3/include/glib-2.0/glib/
+GIO_INC=/opt/glib-2.45.3/include/glib-2.0/gio/
+GLIB_LIB=/opt/glib-2.45.3/lib
+GLIB_PKG_CONFIG_PATH=/opt/glib-2.45.3/lib/pkgconfig
+# 依赖zlib
+ZLIB_INC=/opt/zlib-1.2.11/include
+ZLIB_LIB=/opt/zlib-1.2.11/lib
+ZLIB_PKG_CONFIG_PATH=/opt/zlib-1.2.11/lib/pkgconfig
+
+#添加gstreamer交叉编译的动态库文件和头文件路径
+GST_LIB1=/opt/gstreamer-1.16.2/lib
+GST_LIB2=/opt/gstreamer-1.16.2/lib/gstreamer-1.0
+GST_INC=/opt/gstreamer-1.16.2/include/gstreamer-1.0/gst
+GSTERAMER_PKG_CONFIG_PATH=/opt/gstreamer-1.16.2/lib/lib/pkgconfig
 
 #修改源码包解压后的名称
 PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 
 #定义编译后安装--生成的文件,文件夹位置路径
-INSTALL_PATH=/opt/${PACKAGE_NAME}
+INSTALL_PATH=/opt/${PACKAGE_NAME}-gst
 
 #添加交叉编译工具链路径
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
@@ -51,11 +76,15 @@ CONFIG_FILE=${CONFIG_PATH}/qmake.conf
 
 #下载源码包
 do_download_src () {
+   echo "\033[1;33mstart download ${PACKAGE_NAME}...\033[0m"
+
    if [ ! -f "${COMPRESS_PACKAGE}" ];then
       if [ ! -d "${PACKAGE_NAME}" ];then
          wget -c ${DOWNLOAD_LINK}
       fi
    fi
+
+   echo "\033[1;33mdone...\033[0m"
 }
 
 #解压源码包
@@ -120,6 +149,16 @@ fi
 #配置选项
 do_configure () {
    echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
+   
+   # export PKG_CONFIG_LIBDIR=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_LIBDIR
+   # export PKG_CONFIG_DIR=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_DIR
+   # export PKG_CONFIG_PATH=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_PATH
+
+   # export LIBS="-lg -L${GLIB_LIB} -lgst -L${GST_LIB1} -lffi -L${LIBFFI_LIB} -lxml2 -L${XML2_LIB} -lz -L${ZLIB_LIB}" \
+   # export CFLAGS="-I${GLIB_INC1} -I${GLIB_INC2} -I${GLIB_INC3} -I${GST_INC} -I${GIO_INC} -I${XML2_INC} -I${LIBFFI_LIB} -I${ZLIB_LIB}"
+
+   export CC="${CROSS_CHAIN_PREFIX}-gcc"
+   export CXX="${CROSS_CHAIN_PREFIX}-g++" 
 
    ./configure \
    -prefix ${INSTALL_PATH} \
@@ -146,11 +185,15 @@ do_configure () {
    -no-iconv \
    -no-glib \
    -tslib \
-   -I${TSLIB_INC} \
-   -L${TSLIB_LIB} \
+   -I"${TSLIB_INC}" \
+   -L"${TSLIB_LIB}" \
    -alsa \
-   -I${ALSA_INC} \
-   -L${ALSA_LIB}
+   -I"${ALSA_INC}" \
+   -L"${ALSA_LIB}" \
+   # -gstreamer 1.0 \
+   # -I"${GST_INC}" \
+   # -L"${GST_LIB1}" \
+   # -L"${GST_LIB2}"
 
    echo "\033[1;33mdone...\033[0m"
 }
@@ -158,7 +201,7 @@ do_configure () {
 
 #编译并且安装
 do_make_install () {
-   echo "\033[1;33mstart make and install...\033[0m"
+   echo "\033[1;33mstart make and install ${PACKAGE_NAME} ...\033[0m"
    make && make install
    echo "\033[1;33mdone...\033[0m"
 }
@@ -175,8 +218,8 @@ do_download_src
 do_tar_package
 do_config_before
 do_configure
-do_install_config_dependent
-do_make_install
+# do_install_config_dependent
+# do_make_install
 # do_delete_file
 
 exit $?

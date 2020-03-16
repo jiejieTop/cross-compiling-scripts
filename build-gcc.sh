@@ -26,9 +26,13 @@ DOWNLOAD_LINK=https://developer.arm.com/-/media/Files/downloads/gnu-a/8.3-2019.0
 #下载源码包
 do_download_src () {
    echo "\033[1;33mstart download ${COMPRESS_PACKAGE}...\033[0m"
-   if [ ! -d "${COMPRESS_PACKAGE}" ];then
-      wget -c ${DOWNLOAD_LINK}
+
+   if [ ! -f "${COMPRESS_PACKAGE}" ];then
+      if [ ! -d "${PACKAGE_NAME}" ];then
+         wget -c ${DOWNLOAD_LINK}
+      fi
    fi
+   
    echo "\033[1;33mdone...\033[0m"
 }
 
