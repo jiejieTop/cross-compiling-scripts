@@ -7,7 +7,7 @@ SCRIPT_PATH=$(pwd)
 
 #添加交叉编译工具链路径 
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 
 #修改源码包解压后的名称

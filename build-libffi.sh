@@ -22,7 +22,7 @@ INSTALL_PATH=/opt/${PACKAGE_NAME}
 
 #添加交叉编译工具链路径 
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
 DOWNLOAD_LINK=https://sourceware.org/ftp/${MAJOR_NAME}/${COMPRESS_PACKAGE}
@@ -55,7 +55,12 @@ do_tar_package () {
 do_configure () {
    echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
 
-   CC=${CROSS_CHAIN_PREFIX}-gcc 
+   export CC=${CROSS_CHAIN_PREFIX}-gcc 
+   export LD=${CROSS_CHAIN_PREFIX}-ld 
+   export AR=${CROSS_CHAIN_PREFIX}-ar 
+   export AS=${CROSS_CHAIN_PREFIX}-as 
+   export RANLIB=${CROSS_CHAIN_PREFIX}-ranlib 
+   
    ./configure --prefix=${INSTALL_PATH} --host=${PLATFORM}
 
    echo "\033[1;33mdone...\033[0m"

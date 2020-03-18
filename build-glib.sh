@@ -30,8 +30,8 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 INSTALL_PATH=/opt/${PACKAGE_NAME}
 
 #添加交叉编译工具链路径 
-# CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+# CROSS_CHAIN_PREFIX=/opt-balk/arm-gcc/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
 DOWNLOAD_LINK=http://ftp.gnome.org/pub/gnome/sources/${MAJOR_NAME}/${OPENSRC_VER_PREFIX}/${COMPRESS_PACKAGE}
@@ -75,9 +75,12 @@ glib_cv_rtldglobal_broken=no
 ac_cv_func_posix_getpwuid_r=yes
 ac_cv_func_posix_getgrgid_r=yes
 EOF
+   export CC="${CROSS_CHAIN_PREFIX}-gcc"
+   export CXX="${CROSS_CHAIN_PREFIX}-g++"
+   export CPPFLAGS="-w"
+   export CXXFLAGS="-w"
 
    ./configure \
-   CC=${CROSS_CHAIN_PREFIX}-gcc \
    LIBFFI_CFLAGS="-I${LIBFFI_INC}" \
    LIBFFI_LIBS="-lffi -L${LIBFFI_LIB}" \
    ZLIB_CFLAGS="-I${ZLIB_INC}" \
@@ -85,9 +88,6 @@ EOF
    --prefix=${INSTALL_PATH} \
    --host=${HOST} \
    --cache-file=glib.cache 
-   # --disable-selinux  \
-   # --disable-xattr \
-   # --disable-libelf
 
    echo "\033[1;33mdone...\033[0m"
 }

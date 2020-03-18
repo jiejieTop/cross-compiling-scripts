@@ -6,7 +6,7 @@ HOST=arm-linux-gnueabihf
 SCRIPT_PATH=$(pwd)
 
 #修改源码包解压后的名称
-MAJOR_NAME=arm-linux-gnueabihf
+MAJOR_NAME=gcc-arm-linux-gnueabihf
 
 #修改需要下载的源码前缀和后缀
 OPENSRC_VER_PREFIX=8.3
@@ -39,9 +39,15 @@ do_download_src () {
 #解压源码包
 do_tar_package () {
    echo "\033[1;33mstart unpacking the ${PACKAGE_NAME} package ...\033[0m"
+
+   mkdir -p ${INSTALL_PATH}
+
    if [ ! -d "${PACKAGE_NAME}" ];then
-      tar -xf ${COMPRESS_PACKAGE} -C ${INSTALL_PATH}
+      tar -xf ${COMPRESS_PACKAGE} -C ${INSTALL_PATH} --strip-components=1 
    fi
+
+    mkdir -p ${INSTALL_PATH}
+
    echo "\033[1;33mdone...\033[0m"
 }
 

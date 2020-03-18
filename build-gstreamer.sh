@@ -45,7 +45,7 @@ GSTERAMER_PKG_CONFIG_PATH="${INSTALL_PATH}/lib/pkgconfig"
 
 #添加交叉编译工具链路径 
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
 DOWNLOAD_LINK=https://gstreamer.freedesktop.org/src/${MAJOR_NAME}/${COMPRESS_PACKAGE}

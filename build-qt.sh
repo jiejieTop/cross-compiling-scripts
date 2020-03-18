@@ -45,20 +45,20 @@ ZLIB_LIB=/opt/zlib-1.2.11/lib
 ZLIB_PKG_CONFIG_PATH=/opt/zlib-1.2.11/lib/pkgconfig
 
 #添加gstreamer交叉编译的动态库文件和头文件路径
-GST_LIB1=/opt/gstreamer-1.16.2/lib
-GST_LIB2=/opt/gstreamer-1.16.2/lib/gstreamer-1.0
-GST_INC=/opt/gstreamer-1.16.2/include/gstreamer-1.0/gst
-GSTERAMER_PKG_CONFIG_PATH=/opt/gstreamer-1.16.2/lib/lib/pkgconfig
+# GST_LIB1=/opt/gstreamer-1.16.2/lib
+# GST_LIB2=/opt/gstreamer-1.16.2/lib/gstreamer-1.0
+# GST_INC=/opt/gstreamer-1.16.2/include/gstreamer-1.0/gst
+# GSTERAMER_PKG_CONFIG_PATH=/opt/gstreamer-1.16.2/lib/lib/pkgconfig
 
 #修改源码包解压后的名称
 PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 
 #定义编译后安装--生成的文件,文件夹位置路径
-INSTALL_PATH=/opt/${PACKAGE_NAME}-gst
+INSTALL_PATH=/opt/${PACKAGE_NAME}
 
 #添加交叉编译工具链路径
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 #定义压缩包名称
 COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
@@ -218,8 +218,8 @@ do_download_src
 do_tar_package
 do_config_before
 do_configure
-# do_install_config_dependent
-# do_make_install
+do_install_config_dependent
+do_make_install
 # do_delete_file
 
 exit $?

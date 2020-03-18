@@ -26,7 +26,7 @@ INSTALL_PATH=/opt/${PACKAGE_NAME}
 
 #添加交叉编译工具链路径 
 # CROSS_CHAIN_PREFIX=/opt/arm-gcc/bin/arm-linux-gnueabihf
-CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3/bin/arm-linux-gnueabihf
+CROSS_CHAIN_PREFIX=/opt/gcc-arm-linux-gnueabihf-8.3.0/bin/arm-linux-gnueabihf
 
 #无需修改--下载地址
 DOWNLOAD_LINK=http://xmlsoft.org/sources/${COMPRESS_PACKAGE}
@@ -60,6 +60,9 @@ do_configure () {
 
    export CC=${CROSS_CHAIN_PREFIX}-gcc 
    export CXX=${CROSS_CHAIN_PREFIX}-g++
+   export CPPFLAGS="-w"
+   export CXXFLAGS="-w"
+   
    ./configure \
    --prefix=${INSTALL_PATH} \
    --host=${HOST} \
