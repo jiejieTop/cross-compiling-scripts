@@ -20,36 +20,6 @@ TSLIB_INC=/opt/tslib-1.21/include
 ALSA_LIB=/opt/alsa-lib-1.2.2/lib
 ALSA_INC=/opt/alsa-lib-1.2.2/include
 
-#添加glib交叉编译的动态库文件和头文件路径
-GLIB_LIB=/opt/glib-2.45.3/lib
-GLIB_INC=/opt/glib-2.45.3/include
-
-# 依赖libffi
-LIBFFI_INC=/opt/libffi-3.3/include
-LIBFFI_LIB=/opt/libffi-3.3/lib
-LIBFFI_PKG_CONFIG_PATH=/opt/libffi-3.3/lib/pkgconfig
-# 依赖libxml2
-XML2_INC=/opt/libxml2-2.9.4/include
-XML2_LIB=/opt/libxml2-2.9.4/lib
-XML2_PKG_CONFIG_PATH=/opt/libxml2-2.9.4/lib/pkgconfig
-# 依赖glib
-GLIB_INC1=/opt/glib-2.45.3/include/
-GLIB_INC2=/opt/glib-2.45.3/include/glib-2.0/
-GLIB_INC3=/opt/glib-2.45.3/include/glib-2.0/glib/
-GIO_INC=/opt/glib-2.45.3/include/glib-2.0/gio/
-GLIB_LIB=/opt/glib-2.45.3/lib
-GLIB_PKG_CONFIG_PATH=/opt/glib-2.45.3/lib/pkgconfig
-# 依赖zlib
-ZLIB_INC=/opt/zlib-1.2.11/include
-ZLIB_LIB=/opt/zlib-1.2.11/lib
-ZLIB_PKG_CONFIG_PATH=/opt/zlib-1.2.11/lib/pkgconfig
-
-#添加gstreamer交叉编译的动态库文件和头文件路径
-# GST_LIB1=/opt/gstreamer-1.16.2/lib
-# GST_LIB2=/opt/gstreamer-1.16.2/lib/gstreamer-1.0
-# GST_INC=/opt/gstreamer-1.16.2/include/gstreamer-1.0/gst
-# GSTERAMER_PKG_CONFIG_PATH=/opt/gstreamer-1.16.2/lib/lib/pkgconfig
-
 #修改源码包解压后的名称
 PACKAGE_NAME=${MAJOR_NAME}-${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
 
@@ -99,7 +69,7 @@ do_tar_package () {
 
 #安装依赖项
 do_install_config_dependent () {
-   sudo apt install qt3d5-dev-tools -y
+   sudo apt install g++ make qt3d5-dev-tools -y
    sudo apt install qml-module-qtquick-xmllistmodel -y
    sudo apt install qml-module-qtquick-virtualkeyboard qml-module-qtquick-shapes qml-module-qtquick-privatewidgets qml-module-qtquick-dialogs qml-module- qt-labs-calendar qml -y
    sudo apt install libqt53dquickscene2d5 libqt53dquickrender5 libqt53dquickinput5 libqt53dquickextras5 libqt53dquickanimation5 libqt53dquick5 -y
@@ -149,13 +119,6 @@ fi
 #配置选项
 do_configure () {
    echo "\033[1;33mstart configure ${PACKAGE_NAME}...\033[0m"
-   
-   # export PKG_CONFIG_LIBDIR=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_LIBDIR
-   # export PKG_CONFIG_DIR=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_DIR
-   # export PKG_CONFIG_PATH=${GSTERAMER_PKG_CONFIG_PATH}:${GLIB_PKG_CONFIG_PATH}:${LIBFFI_PKG_CONFIG_PATH}:${XML2_PKG_CONFIG_PATH}:${ZLIB_PKG_CONFIG_PATH}:$PKG_CONFIG_PATH
-
-   # export LIBS="-lg -L${GLIB_LIB} -lgst -L${GST_LIB1} -lffi -L${LIBFFI_LIB} -lxml2 -L${XML2_LIB} -lz -L${ZLIB_LIB}" \
-   # export CFLAGS="-I${GLIB_INC1} -I${GLIB_INC2} -I${GLIB_INC3} -I${GST_INC} -I${GIO_INC} -I${XML2_INC} -I${LIBFFI_LIB} -I${ZLIB_LIB}"
 
    export CC="${CROSS_CHAIN_PREFIX}-gcc"
    export CXX="${CROSS_CHAIN_PREFIX}-g++" 
@@ -190,10 +153,6 @@ do_configure () {
    -alsa \
    -I"${ALSA_INC}" \
    -L"${ALSA_LIB}" \
-   # -gstreamer 1.0 \
-   # -I"${GST_INC}" \
-   # -L"${GST_LIB1}" \
-   # -L"${GST_LIB2}"
 
    echo "\033[1;33mdone...\033[0m"
 }
@@ -216,9 +175,9 @@ do_delete_file () {
 
 do_download_src
 do_tar_package
+do_install_config_dependent
 do_config_before
 do_configure
-do_install_config_dependent
 do_make_install
 # do_delete_file
 
