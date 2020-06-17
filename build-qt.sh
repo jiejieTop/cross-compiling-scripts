@@ -9,8 +9,8 @@ SCRIPT_PATH=$(pwd)
 MAJOR_NAME=qt-everywhere-src
 
 #修改需要下载的源码前缀和后缀
-OPENSRC_VER_PREFIX=5.14
-OPENSRC_VER_SUFFIX=.1
+OPENSRC_VER_PREFIX=5.11
+OPENSRC_VER_SUFFIX=.3
 
 #添加tslib交叉编译的动态库文件和头文件路径
 TSLIB_LIB=/opt/tslib-1.21/lib
@@ -35,8 +35,8 @@ COMPRESS_PACKAGE=${PACKAGE_NAME}.tar.xz
 
 #无需修改--自动组合下载地址
 OPENSRC_VER=${OPENSRC_VER_PREFIX}${OPENSRC_VER_SUFFIX}
-# DOWNLOAD_LINK=http://download.qt.io/new_archive/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
-DOWNLOAD_LINK=http://download.qt.io/official_releases/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
+DOWNLOAD_LINK=http://download.qt.io/new_archive/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
+# DOWNLOAD_LINK=http://download.qt.io/official_releases/qt/${OPENSRC_VER_PREFIX}/${OPENSRC_VER}/single/${COMPRESS_PACKAGE}
 
 #无需修改--自动组合平台路径
 CONFIG_PATH=${SCRIPT_PATH}/${PACKAGE_NAME}/qtbase/mkspecs/${PLATFORM}
@@ -65,13 +65,18 @@ do_tar_package () {
    fi
    echo "\033[1;33mdone...\033[0m"
    cd ${PACKAGE_NAME}
+
+   # 修复5.11.3 版本的bug
+   if [ ${OPENSRC_VER_PREFIX} == "5.11" and ${OPENSRC_VER_SUFFIX} == ".3" ]; then
+      sed 's/asm volatile /asm /' -i qtscript/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.cpp
+   fi
 }
 
 #安装依赖项
 do_install_config_dependent () {
    sudo apt install g++ make qt3d5-dev-tools -y
    sudo apt install qml-module-qtquick-xmllistmodel -y
-   sudo apt install qml-module-qtquick-virtualkeyboard qml-module-qtquick-shapes qml-module-qtquick-privatewidgets qml-module-qtquick-dialogs qml-module- qt-labs-calendar qml -y
+   sudo apt install qml-module-qtquick-virtualkeyboard qml-module-qtquick-privatewidgets qml-module-qtquick-dialogs qml -y
    sudo apt install libqt53dquickscene2d5 libqt53dquickrender5 libqt53dquickinput5 libqt53dquickextras5 libqt53dquickanimation5 libqt53dquick5 -y
    sudo apt install qtdeclarative5-dev qml-module-qtwebengine qml-module-qtwebchannel qml-module-qtmultimedia qml-module-qtaudioengine -y
 }
