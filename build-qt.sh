@@ -9,8 +9,8 @@ SCRIPT_PATH=$(pwd)
 MAJOR_NAME=qt-everywhere-src
 
 #修改需要下载的源码前缀和后缀
-OPENSRC_VER_PREFIX=5.11
-OPENSRC_VER_SUFFIX=.3
+OPENSRC_VER_PREFIX="5.11"
+OPENSRC_VER_SUFFIX=".3"
 
 #添加tslib交叉编译的动态库文件和头文件路径
 TSLIB_LIB=/opt/tslib-1.21/lib
@@ -67,7 +67,7 @@ do_tar_package () {
    cd ${PACKAGE_NAME}
 
    # 修复5.11.3 版本的bug
-   if [ ${OPENSRC_VER_PREFIX} == "5.11" and ${OPENSRC_VER_SUFFIX} == ".3" ]; then
+   if [ ${OPENSRC_VER_PREFIX}=="5.11" -a ${OPENSRC_VER_SUFFIX}==".3" ]; then
       sed 's/asm volatile /asm /' -i qtscript/src/3rdparty/javascriptcore/JavaScriptCore/jit/JITStubs.cpp
    fi
 }
